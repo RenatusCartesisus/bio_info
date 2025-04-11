@@ -1,0 +1,498 @@
+---
+title: "Act-Colab"
+author: "Rodrigo Hurtado"
+date: "2025-04-07"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Actividad colaborativa en clase | Ejercicios Bioinformáticos en R
+
+Integrantes del equipo Hill Valley
+    Rodrigo Alejandro Hurtado Cortés - A01713854
+    Raúl Josué Mendoza Medina - A01712018
+    Bernardo Givrain Ortega Bustos - A01713350
+    Kevin Uriel Dzib Uc - A00842744
+    Dante Hernández Ramírez - A01668070
+
+
+## Introducción
+
+La secuencia del ADN tiene como función descifrar mutaciones (cambios) en el ADN que pueden causar enfermedades genéticas, lo que resulta importante ya que al conocer la causa de una enfermedad no solamente es posible investigar un tratamiento específico sino que además es posible darle seguimiento al surgimiento de nuevos síntomas para prevenir y estudiar a familiares en riesgo de padecer o transmitir dicha enfermedad. Este ADN o ácido desoxirribonucleico es el material genético que tiene como función determinar las características de cada individuo, la totalidad de ADN en cada célula del organismo constituye su genoma, que está compuesto por una sucesión de cuatro componentes básicos o nucleótidos, conocidos por las iniciales de las bases nitrogenadas que forman: A, C, T y G, que corresponden a Adenina, Citosina, Timina y Guanina respectivamente.
+
+Es posible afirmar que un gen, formado por 3.000.000.000 de nucleótidos que tienen 23.000 genes cuya función es dar instrucciones a las células para fabricar proteínas, es un segmento de ADN que contiene información para que la célula pueda producir una proteína.
+
+En el genoma también existen genes que no codifican para proteínas, sino que contienen las instrucciones para fabricar fragmentos de Ácido ribonucleico (ARN). Cada proteína y cada ARN codificados por los genes cumple una función determina en el organismo. Los genes contienen regiones codificantes llamadas exones que son las que determinan la secuencia o el orden en que se disponen los aminoácidos que forman las proteínas.
+
+
+## Funciones
+
+A continuación se disponen las funciones correspondientes a la actividad asignada por el profesor Gerardo Alanís Fuentes durante la clase de Análisis de Biología Computacional Grupo 201.
+
+### Función No. 1
+
+Objetivos: 
+1.  Una función que solicite al usuario el número de caracteres a imprimir en la cadena de bases de DNA
+2.  La impresión de dicha secuencia con la única presencia de las bases
+
+#### Descripción de su funcionamiento:
+
+-   Se le solicita al usuario ingresar el número de caracteres.
+-   Una vez ingresado el número de caracteres contenidos en la cadena, se porcede a su impresión tomando las bases como parámetros aleatorios.
+
+
+```{r}
+
+create_DNA_strand <- function(n){
+  #================================Asignación de variables=====================================
+  #Creamos una concatenación con las bases de DNA:
+  bases <- c("A","C","T","G","-","N")
+  
+  #================================Creación de la función=======================================
+  #Basados en el numero "n" ingresado por el usuario, creamos la cadena de bases de DNA
+  
+  
+  #Con el uso de "prob", alteramos las probabilidades de apareción de los caracteres dentro de la
+  #concatenación "bases", sumando las probabilidades debe de dar 1.
+  cadena_dna <- paste0(sample(
+    bases, size=n, replace=TRUE, prob=c(0.2, 0.2, 0.2, 0.2, 0.1,0.1)),
+    collapse="")
+  
+  #Se imprime la función
+  return(cadena_dna)
+}
+
+```
+
+#### Ejemplo de aplicación
+
+
+```{r ejemplo}
+# Ejemplo con una secuencia que incluye todos los caracteres posibles
+n <- 15
+print(create_DNA_strand(n))
+```
+
+
+---
+
+### Función No. 2
+
+Objetivo: Calcular el tamaño de una secuencia de ADN dada utilizando el leguaje de programación R
+
+#### Descripción de su funcionamiento:
+
+Primero se define una funcion que recibira una dadena de txto con la secuencia de ADN, esta funcion utiliza "nchar()" para contar el numero de caracteres
+Seguido de eso se guarda una secuencia larga de ADN en una variable, se llama a la funcion para calcular su tamaño para que al completar todo se imprima el resultado en consola
+
+```{r}
+
+calcular_tam_dna <- function(secuencia_dna) {
+  return(nchar(secuencia_dna)) 
+}
+
+```
+
+---
+
+### Función No. 3
+
+Objetivo: calcular el porcentaje de cada base, en una secuencia de ADN, lo que comprende caracteres especiales como guiones (que representan omisiones) y "N" (bases desconocidas).
+
+```{r funcion_analisis}
+calcular_porcentaje_bases <- function(secuencia) {
+  # Con el propósito de evitar errores de ingreso de minúsculas, es preciso
+  # convertir la secuencia ingresada a mayúsculas, por ello se usa "toupper"
+  secuencia <- toupper(secuencia)
+  
+  # Se cuentan el número total de caracteres
+  total_caracteres <- nchar(secuencia)
+  
+  # Se cuentan las bases (A, T, G, C) así como caracteres desconocidos (N) y guiones (-) u omisiones
+  num_A <- sum(strsplit(secuencia, "")[[1]] == "A")
+  num_T <- sum(strsplit(secuencia, "")[[1]] == "T")
+  num_G <- sum(strsplit(secuencia, "")[[1]] == "G")
+  num_C <- sum(strsplit(secuencia, "")[[1]] == "C")
+  num_error <- (total_caracteres-(num_A+num_T+num_G+num_C))
+  
+  # Se calculan los respectivos porcentajes de cada base respecto al total
+  porcentaje_A <- (num_A / total_caracteres) * 100
+  porcentaje_T <- (num_T / total_caracteres) * 100
+  porcentaje_G <- (num_G / total_caracteres) * 100
+  porcentaje_C <- (num_C / total_caracteres) * 100
+  porcentaje_error <- (num_error / total_caracteres) * 100
+  
+  # Se imprimen los respectivos resultados obtenidos
+  cat("Análisis de la secuencia de ADN:\n")
+  cat("Total de caracteres:", total_caracteres, "\n\n")
+  cat("Bases encontradas:\n")
+  cat("A:", num_A, "(", round(porcentaje_A, 2), "%)\n")
+  cat("T:", num_T, "(", round(porcentaje_T, 2), "%)\n")
+  cat("G:", num_G, "(", round(porcentaje_G, 2), "%)\n")
+  cat("C:", num_C, "(", round(porcentaje_C, 2), "%)\n")
+  cat("Errores (desconocido):", num_error, "(", round(porcentaje_error, 2), "%)\n")
+  
+  # Se crea el respectivo histograma (ver si se puede cambiar a la funcion hist)
+  barplot(c(porcentaje_A, porcentaje_T, porcentaje_G, porcentaje_C, porcentaje_error),
+          names.arg = c("A", "T", "G", "C", "Errores"),
+          col = c("green", "red", "blue", "yellow", "black"),
+          main = "Porcentaje de bases en la secuencia de ADN",
+          ylab = "Porcentaje (%)",
+          xlab = "Base")
+}
+```
+
+#### Ejemplo de aplicación
+
+La función anteriormente instanciada se prueba con una secuencia de ADN de ejemplo, la cual incluye todos los posibles caracteres del ADN para la cadena que recibe la función.
+
+```{r ejemplo}
+# Ejemplo con una secuencia que incluye todos los caracteres posibles
+secuencia_ejemplo <- "CTGATTT-GATGGTC-NAT"
+calcular_porcentaje_bases(secuencia_ejemplo)
+```
+---
+
+### Función No. 4
+Objetivo: 
+
+
+#### Descripción de su funcionamiento:
+
+
+
+```{r}
+library('stringr')
+
+
+transcript_DNA_to_RNA<- function(dna_strand){
+  
+  initial <- c("A", "C", "T", "G");
+  counter <- c("U", "G", "A", "C");
+  
+  dna_strand_vector <- strsplit(dna_strand, "")[[1]]
+  
+  strand <- "";
+  found <- FALSE;
+  index<- 0;
+  
+  for (a in 1:nchar(dna_strand)){
+    for (i in 1:length(initial)){
+      if(dna_strand_vector[a]==initial[i]){
+        found <- TRUE
+        index <- i
+      }
+    }
+    
+    if(found){
+      strand<- paste(strand, counter[index])
+      found <- FALSE;
+      index<- 0;
+    }
+    else{
+      strand<- paste(strand, dna_strand_vector[a])
+    }
+  }
+  
+  return(strand)
+}
+
+```
+
+#### Ejemplo de aplicación
+
+```{r ejemplo}
+new_strand <- transcript_DNA_to_RNA("ACGGGTAAGG")
+new_strand
+```
+
+
+---
+
+### Función No. 5
+
+Objetivo: Se ingresa una cadena de caracteres (string) que corresponde a una cadena de ARN la cual puede estar o no completa, que sus nucleotidos sean multiplos de tres o incluso contenga caracteres invalidos como ("N" o "-").
+
+#### Descripción de su funcionamiento:
+
+La función *reading_ARNm( n )* acepta una linea de caracteres **n** :
+
+-   Se confirma si su tamaño es divisible entre 3 sin residuo (codones completos) a través de la operación modulo.
+
+-   Si el modulo evaluado es igual a 0, se envia la cadena de texto sin modificar a la función *read_codons()* junto con el número posible de codones (division al suelo del tamaño del texto entre 3).
+
+-   Si el módulo evaluado es diferente de 0, este se recorta de modo que unicamente se queda un texto divisible entre 3 en la variable ARNm.
+
+    -   Una vez modificado se envia la cadena de texto sin modificar a la función *read_codons()* junto con el número posible de codones.
+    -   Una vez recibida la cadena de aminoacidos asignada a la variable *aminoacid_chain*
+    -   Si los últimos caracteres de la cadena son " Stop", la variable *aminoacid_chain* se mantiene igual.
+    -   Si no son iguales a " Stop" entonces se agrega una referencia a un codon no disponible "+ NA" a *aminoacid_chain* ya que dicha cadena no era divisible entre 3 y por ende tiene una serie de nucleotidos que no pueden ser evaluados como codones.
+
+-   Finalmente se regresa la variable *aminoacid_chain*.
+
+La función *read_codons( DNA_line , codon_number )* acepta una linea de caracteres divisibles entre 3 **DNA_line** y el número de codones en que dicha linea puede dividirse **codon_number**:
+
+-   A través de un ciclo for en el cual el primer y último número incrementan de 3 en 3 se divide la linea de ADN **DNA_line** en substrings de 3 elementos los cuales se almacenan en el vector *codons*.
+
+-   Se declaran las variables booleanas *stop_codon*, *start_reading* y *codon_located* las cuales seran utilizadas posteriormente, como falsas.
+
+-   Se declaran los diccionarios donde el diccionario *dictionary_names* es correspondiente con los aminoacidos contenidos en *dictionary_meanings*.
+
+-   Se ejecuta un ciclo while que se repite mientras el contados j sea menos al número de codones presentes en el vector *codons* y la condición *stop_codon* sea falsa.
+
+    -   Se evalua si dicho codon es igual al codon de inicio de lectura "AUG", si esto es asi declara la variable booleana *start_reading* como verdadero.
+
+        -   Unicamente si la variable booleana *start_reading* es verdadera se ejecuta un ciclo for el cual pasa por todos los codones dentro de *dictionary_names* buscando el que es identico al codon analizado *codons[j]*.
+
+        -   Si este es encontrado, se agrega el correspondiente aminoacido de *dictionary_meanings* a la variable *protein_chain* y se declara la variable *codon_located* como verdadero.
+
+            -   Igualmente se comprueba si el aminoacido correspondiente es igual a "Stop". Si es asi se declara a la variable *stop_codon* como verdadera y se cierra el ciclo while.
+
+        -   De no ser encontrado, se agrega la terminación "NA +" que indica que no se hallo una similitud y por lo tanto se refiere a un codon no identificado.
+
+-   Posteriormente, si se encuentra un signo " +" al final de la variable *protein_chain* , este se elimina para finalmente regresar dicha variable.
+
+##### Función auxiliar: *read_codons( DNA_line, codon_number )*
+
+```{r}
+
+library(stringr)
+
+# Auxiliar function to help the function translation_ARNm()
+
+read_codons<- function(DNA_line, codon_number){
+  first_number <- 1
+  last_number <-3 
+  codons <- c()
+  protein_chain <-""
+  
+  #Division of the line into codons inside a vector.
+  for (i in 1:codon_number){
+    new_codon = substr(DNA_line,first_number,last_number)
+    codons <- append(codons,new_codon)
+    first_number <- first_number +3
+    last_number <- last_number +3
+  }
+  
+  stop_codon <- FALSE
+  codon_located <- FALSE
+  start_reading <-FALSE
+  
+  j <- 1
+  
+  dictionary_meanings <- c(' Phe +',' Phe +',' Leu +',' Leu +',
+    ' Leu +',' Leu +',' Leu +',' Leu +', 
+    ' Ile +',' Ile +',' Ile +',' Met +',
+    ' Val +',' Val +',' Val +',' Val +',
+    ' Ser +',' Ser +',' Ser +',' Ser +',
+    ' Pro +',' Pro +',' Pro +',' Pro +', 
+    ' Thr +',' Thr +',' Thr +',' Thr +',
+    ' Ala +',' Ala +',' Ala +',' Ala +',
+    ' Tyr +',' Tyr +',' Stop',' Stop',
+    ' His +',' His +',' Gin +',' Gin +',
+    ' Asn +',' Asn +',' Lys +',' Lys +',
+    ' Asp +',' Asp +',' Glu +',' Glu +',
+    ' Cys +',' Cys +',' Stop',' Trp +',
+    ' Arg +',' Arg +',' Arg +',' Arg +',
+    ' Ser +',' Ser +',' Arg +',' Arg +',
+    ' Gly +',' Gly +',' Gly +',' Gly +')
+  
+  
+    dictionary_names <- c('UUU','UUC','UUA','UUG',
+        'CUU','CUC','CUA','CUG',
+        'AUU','AUC','AUA','AUG',
+        'GUU','GUC','GUA','GUG',
+        'UCU','UCC','UCA','UCG',
+        'CCU','CCC','CCA','CCG',
+        'ACU','ACC','ACA','ACG',
+        'GCU','GCC','GCA','GCG',
+        'UAU','UAC','UAA','UAG',
+        'CAU','CAC','CAA','CAG',
+        'AAU','AAC','AAA','AAG',
+        'GAU','GAC','GAA','GAG',
+        'UGU','UGC','UGA','UGG',
+        'CGU','CGC','CGA','CGG',
+        'AGU','AGC','AGA','AGG',
+        'GGU','GGC','GGA','GGG')
+
+    
+  while (j <= length(codons) && stop_codon == FALSE){
+    
+    if (str_equal(codons[j],'AUG') == TRUE){
+      start_reading <- TRUE
+    }
+    
+    if (start_reading == TRUE){
+      for (x in 1:length(dictionary_names)){
+        if (str_equal(dictionary_names[x], codons[j]) == TRUE){
+  
+          protein_chain <- paste(protein_chain,dictionary_meanings[x])
+          codon_located <- TRUE
+  
+          if ((dictionary_meanings[x] == " Stop") == TRUE){
+            stop_codon <- TRUE
+          }
+        }
+      }
+      
+      #Option in case none of the dictionary cases marches
+      if (codon_located == FALSE){
+        protein_chain <- paste(protein_chain," NA +")
+      }
+      else{
+        protein_chain <-protein_chain
+        codon_located <- FALSE
+      }
+    }
+    
+    #Increase of the count of codons
+    j <- j+1
+  }
+  
+    #Elimination of the + sign from the end character if it matches
+  if( str_equal(substr(protein_chain, nchar(protein_chain)-1,nchar(protein_chain))," +")){
+    protein_chain <- substr(protein_chain, 1, nchar(protein_chain)-1)
+  }
+  
+  return(protein_chain)
+}
+
+```
+
+##### Función principal: *reading_ARNm( )*
+
+```{r}
+reading_ARNm <- function(line){
+  size <- nchar(line)
+  
+  module <- size %% 3
+  codon_number <- floor(nchar(line)/3)
+  
+  if (module == 0){
+    ARNm <- line
+    aminoacid_chain <- read_codons(ARNm,codon_number)
+  }
+  
+  else{
+    ARNm <- substr(line, 1, size-module)
+    aminoacid_chain <- read_codons(ARNm,codon_number)
+    
+    if(str_equal(substr(aminoacid_chain, nchar(aminoacid_chain)-4, nchar(aminoacid_chain) )," Stop")){
+      aminoacid_chain <- aminoacid_chain
+    }
+    else{
+      aminoacid_chain <- paste(aminoacid_chain,"+ NA")
+    }
+  }
+  
+  return(aminoacid_chain)
+}
+```
+
+
+#### Ejemplo de aplicación
+
+```{r ejemplo}
+ARN_irre <- "CUUUGDDCGAUGAGCUCCUACU"
+print(reading_ARNm(ARN_irre))
+```
+
+---
+
+### Función No. 6
+
+Objetivo: Se ingresa una cadena de caracteres (string) que corresponde a una cadena de ADN en el sentido de 5' a 3'. La función en cuestion regresa la misma cadena invirtiendo el sentido de lectura, es decir de 3' a 5'.
+
+#### Descripción de su funcionamiento:
+
+La función *reverse_strand( DNA_line )* acepta una linea de caracteres **DNA_line** : - Devuelve la cadena de caracteres invertida despues de ser procesada por la función *stri_reverse()* de la libreria *stringi*.
+
+```{r}
+library(stringi)
+
+reverse_strand<- function(DNA_line){
+  reverse_strand <- stri_reverse(DNA_line)
+  return(reverse_strand)
+}
+```
+
+#### Ejemplo de aplicación
+
+```{r ejemplo}
+ARN_irre <- "CUUUGDDCGAUGAGCUCCUACU"
+reverse_strand(ARN_irre)
+```
+
+---
+
+### Función No. 7
+Objetivo: Devolver la hebra complementaria de la cadena de ADN ingresada dentro de la función. Es decir, se devolvera una cadena en un sentido inverso 3' a 5' cuyas bases son las complementarias de las observadas en el parámetro ingresado.
+
+#### Descripción de su funcionamiento:
+
+
+
+```{r}
+library('stringr')
+
+complement_strand <- function(dna_strand){
+  
+  initial <- c("A", "C", "T", "G");
+  complement <- c("T", "G", "A", "C");
+  
+  names(initial) <- complement
+  
+  dna_strand <- strsplit(dna_strand, "")[[1]]
+  
+  strand <- "";
+  
+  for (i in dna_strand){
+    if(is.na(match(i, initial))){
+     strand <- paste(strand, i);
+    }
+    else{
+      strand <- paste(strand, initial[[i]]);
+    }
+  }
+  return(strand)
+}
+```
+
+#### Ejemplo de aplicación
+
+```{r ejemplo}
+new_strand <- complement_strand("ACGGGSEGSRTAAGG")
+new_strand
+```
+
+
+---
+
+
+### Función No. 8
+Objetivo: 
+
+
+#### Descripción de su funcionamiento:
+
+
+
+```{r}
+
+
+```
+
+
+
+
+
+## Prueba del funcionamiento de las funciones anteriores
+
+
+
+## Referencias
+¿Para qué sirven los estudios de secuenciación del ADN en relación con la salud humana? (2024). https://cedie.conicet.gov.ar/para-que-sirven-los-estudios-de-secuenciacion-del-adn-en-relacion-con-la-salud-humana/ 
+
