@@ -14,10 +14,17 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Actividad colaborativa en clase \| Ejercicios Bioinformáticos en R
 
-Integrantes del equipo Hill Valley Rodrigo Alejandro Hurtado Cortés -
-A01713854 Raúl Josué Mendoza Medina - A01712018 Bernardo Givrain Ortega
-Bustos - A01713350 Kevin Uriel Dzib Uc - A00842744 Dante Hernández
-Ramírez - A01668070
+Integrantes del equipo Hill Valley
+
+-   Rodrigo Alejandro Hurtado Cortés \| A01713854
+
+-   Raúl Josué Mendoza Medina \| A01712018
+
+-   Bernardo Givrain Ortega Bustos \| A01713350
+
+-   Kevin Uriel Dzib Uc \| A00842744
+
+-   Dante Hernández Ramírez \| A01668070
 
 ## Introducción
 
@@ -81,7 +88,7 @@ create_DNA_strand <- function(n){
   #Con el uso de "prob", alteramos las probabilidades de aparción de los caracteres dentro de la
   #concatenación "bases", sumando las probabilidades debe de dar 1.
   cadena_dna <- paste0(sample(
-    bases, size=n, replace=TRUE, prob=c(0.2, 0.2, 0.2, 0.2, 0.1,0.1)),
+    bases, size=n, replace=TRUE, prob=c(0.3, 0.3, 0.3, 0.3, 0.05,0.05)),
     collapse="")
   
   #Se imprime la función
@@ -136,7 +143,7 @@ calcular_porcentaje_bases <- function(secuencia) {
   secuencia <- toupper(secuencia)
   
   # Se cuentan el número total de caracteres
-  total_caracteres <- nchar(secuencia)
+  total_caracteres <- calcular_tam_dna(secuencia)
   
   # Se cuentan las bases (A, T, G, C) así como caracteres desconocidos (N) y guiones (-) u omisiones
   num_A <- sum(strsplit(secuencia, "")[[1]] == "A")
@@ -243,7 +250,7 @@ transcript_DNA_to_RNA<- function(dna_strand){
   found <- FALSE;
   index<- 0;
   
-  for (a in 1:nchar(dna_strand)){
+  for (a in 1:calcular_tam_dna(dna_strand)){
     for (i in 1:length(initial)){
       if(dna_strand_vector[a]==initial[i]){
         found <- TRUE
@@ -252,12 +259,12 @@ transcript_DNA_to_RNA<- function(dna_strand){
     }
     
     if(found){
-      strand<- paste(strand, counter[index])
+      strand<- paste0(strand, counter[index])
       found <- FALSE;
       index<- 0;
     }
     else{
-      strand<- paste(strand, dna_strand_vector[a])
+      strand<- paste0(strand, dna_strand_vector[a])
     }
   }
   
@@ -431,7 +438,7 @@ read_codons<- function(DNA_line, codon_number){
       for (x in 1:length(dictionary_names)){
         if (str_equal(dictionary_names[x], codons[j]) == TRUE){
   
-          protein_chain <- paste(protein_chain,dictionary_meanings[x])
+          protein_chain <- paste0(protein_chain,dictionary_meanings[x])
           codon_located <- TRUE
   
           if ((dictionary_meanings[x] == " Stop") == TRUE){
@@ -442,7 +449,7 @@ read_codons<- function(DNA_line, codon_number){
       
       #Option in case none of the dictionary cases marches
       if (codon_located == FALSE){
-        protein_chain <- paste(protein_chain," NA +")
+        protein_chain <- paste0(protein_chain," NA +")
       }
       else{
         protein_chain <-protein_chain
@@ -468,10 +475,10 @@ read_codons<- function(DNA_line, codon_number){
 
 ```{r}
 reading_ARNm <- function(line){
-  size <- nchar(line)
+  size <- calcular_tam_dna(line)
   
   module <- size %% 3
-  codon_number <- floor(nchar(line)/3)
+  codon_number <- floor(calcular_tam_dna(line)/3)
   
   if (module == 0){
     ARNm <- line
@@ -482,11 +489,16 @@ reading_ARNm <- function(line){
     ARNm <- substr(line, 1, size-module)
     aminoacid_chain <- read_codons(ARNm,codon_number)
     
-    if(str_equal(substr(aminoacid_chain, nchar(aminoacid_chain)-4, nchar(aminoacid_chain) )," Stop")){
+    if(str_equal(substr(aminoacid_chain, calcular_tam_dna(aminoacid_chain)-4, nchar(aminoacid_chain) )," Stop")){
       aminoacid_chain <- aminoacid_chain
     }
+    
+    else if(str_equal(substr(aminoacid_chain, calcular_tam_dna(aminoacid_chain)-1, calcular_tam_dna(aminoacid_chain) ),"")){
+       aminoacid_chain <- aminoacid_chain
+     }
+    
     else{
-      aminoacid_chain <- paste(aminoacid_chain,"+ NA")
+      aminoacid_chain <- paste0(aminoacid_chain,"+ NA")
     }
   }
   
@@ -525,13 +537,13 @@ misma cadena.
 
 reverse_strand<- function(DNA_line){
   dna_chars <- strsplit(DNA_line, "")
-  len = nchar(DNA_line)
+  len = calcular_tam_dna(DNA_line)
   if (len== 1){
     converse_string = dna_chars[[1]]
   }
   else{ 
     converse_split = dna_chars[[1]][len:1]
-    converse_string = paste(converse_split, collapse = "")
+    converse_string = paste0(converse_split, collapse = "")
     converse_split
   }
   return(converse_string);
@@ -595,13 +607,13 @@ complement_strand <- function(dna_strand){
   
   for (i in dna_strand){
     if(is.na(match(i, initial))){
-     strand <- paste(strand, i);
+     strand <- paste0(strand, i);
     }
     else{
-      strand <- paste(strand, initial[[i]]);
+      strand <- paste0(strand, initial[[i]]);
     }
   }
-  strand <- paste(strand, "-5'");
+  strand <- paste0(strand, "-5'");
   return(strand)
 }
 ```
@@ -645,10 +657,10 @@ complement_strand <- function(dna_strand){
   
   for (i in dna_strand){
     if(is.na(match(i, initial))){
-     strand <- paste(strand, i);
+     strand <- paste0(strand, i);
     }
     else{
-      strand <- paste(strand, initial[[i]]);
+      strand <- paste0(strand, initial[[i]]);
     }
   }
   return(strand)
@@ -718,12 +730,12 @@ de las posiciones más prominentes en términos de escala de información a
 lo largo de todo el campo de la investigación científica.
 
 Esto le ha permitido incluso expandirse a nuevas áreas de la
-investigación biológica que cuentan con demoasiados datos, incluyendo el
-procesamiento de imágenes y la estructura macromolecular, es decir, se
-convirtió en un campo derivado llamado **Ciencia de Datos Biomédica.**
+investigación biológica que cuentan con demasiados datos, incluyendo el
+procesamiento de imágenes y la estructura macromolecular,convirtiendose
+en un campo derivado llamado **Ciencia de Datos Biomédica.**
 
 Es decir, esta especie de matrimonio entre la ciencia de datos y el
-estudio de la genética ha abierto nuevas posibilidades para descurbir y
+estudio de la genética ha abierto nuevas posibilidades para descubrir y
 desmenuzar los misterios codificados en nuestro ADN. Al aprovechar la
 tecnología y las herramientas que ofrece, como los algoritmos de machine
 learning y su aplicación en la información masiva que se maneja, los
